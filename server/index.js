@@ -1,4 +1,5 @@
 import configs from 'lib/configs/wechat'
+import publications from './publications';
 import privateConfigs from 'server/configs/wechat';
 import methods from './methods';
 
@@ -7,6 +8,7 @@ import methods from './methods';
 
 export default {
   configs,
+  publications,
   privateConfigs,
   // middleware,
   methods
