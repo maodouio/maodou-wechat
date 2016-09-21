@@ -36,6 +36,17 @@ function getParameterByName(name) {
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+const appId = ({ context, redirectUrl }, onData) => {
+  const { Collections } = context;
+  const wechatPkg = Collections.Packages.findOne({ name: 'wechat' });
+  if (wechatPkg) {
+    const authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize' +
+      `?appid=${wechatPkg.configs.appId}&redirect_uri=${encodeURIComponent(redirectUrl)}` +
+      '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+    onData(null, { authUrl });
+  }
+};
+
 const composer = () => {
   let uiState = UIState.IDLE; // closure variable
 
@@ -86,17 +97,14 @@ const depsToProps = (context) => {
   redirectUrl = removeURLParameter(redirectUrl, 'code');
   redirectUrl = removeURLParameter(redirectUrl, 'state');
 
-  const authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize' +
-    `?appid=${context.Collections.Packages.findOne({ name: 'wechat' }).configs.appId}&redirect_uri=${encodeURIComponent(redirectUrl)}` +
-    '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-
   return {
     context,
-    authUrl
+    redirectUrl
   };
 };
 
 export default composeAll(
+  withTracker(appId),
   withTracker(composer()),
   useDeps(depsToProps)
 )(SignInButton);
