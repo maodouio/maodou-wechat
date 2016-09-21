@@ -11,5 +11,15 @@ export default {
   publications,
   privateConfigs,
   // middleware,
-  methods
+  methods,
+  init(context) {
+    const { Collections } = context;
+    if (!Collections.Packages.findOne({ name: 'wechat' })) {
+      Collections.Packages.insert({
+        name: 'wechat',
+        configs: context.configs.wechat || {},
+        privateConfigs: context.privateConfigs.wechat || {}
+      });
+    }
+  }
 };

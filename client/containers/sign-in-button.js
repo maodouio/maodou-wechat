@@ -87,7 +87,7 @@ const depsToProps = (context) => {
   redirectUrl = removeURLParameter(redirectUrl, 'state');
 
   const authUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize' +
-    `?appid=${context.configs.wechat.appId}&redirect_uri=${encodeURIComponent(redirectUrl)}` +
+    `?appid=${context.Collections.Packages.findOne({ name: 'wechat' }).configs.appId}&redirect_uri=${encodeURIComponent(redirectUrl)}` +
     '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
 
   return {

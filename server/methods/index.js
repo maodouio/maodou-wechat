@@ -3,13 +3,15 @@ import {Accounts} from 'meteor/accounts-base';
 import {HTTP} from 'meteor/http';
 
 export default (context) => {
+  const { Collections } = context;
+  const { Packages } = Collections;
   Meteor.methods({
     'wechatAuth.getUserInfo'(code) {
       check(code, String);
       this.unblock();
-
+      const appId = Packages.findOne({ name: 'wechat' }).configs.appId;
       let res = HTTP.get('https://api.weixin.qq.com/sns/oauth2/access_token' +
-        `?appid=${context.configs.wechat.appId}&secret=${context.privateConfigs.wechat.appSecret}&code=${code}&grant_type=authorization_code`);
+        `?appid=${appId}&secret=${context.privateConfigs.wechat.appSecret}&code=${code}&grant_type=authorization_code`);
       if (res.statusCode !== 200) {
         throw new Meteor.Error('fail-to-fetch-access-token', res.statusCode);
       }
@@ -31,6 +33,14 @@ export default (context) => {
       }
 
       return res;
+    },
+    'wechat.saveConfigs'(configs) {
+      Packages.update({ name: 'wechat' }, {
+        $set: {
+          'configs.appId': configs.appId,
+          'privateConfigs.appSecret': configs.appSecret
+        }
+      });
     }
   });
 

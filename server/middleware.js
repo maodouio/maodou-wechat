@@ -5,6 +5,7 @@ export default function(context) {
   const app = express();
 
   app.use('/wechat', wechat({
+    // TODO: use packages, not context
     token: context.privateConfigs.wechat.token,
     appid: context.configs.wechat.appId,
     encodingAESKey: context.privateConfigs.wechat.encodingAESKey
