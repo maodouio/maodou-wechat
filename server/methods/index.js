@@ -10,8 +10,9 @@ export default (context) => {
       check(code, String);
       this.unblock();
       const appId = Packages.findOne({ name: 'wechat' }).configs.appId;
+      const appSecret = Packages.findOne({ name: 'wechat' }).privateConfigs.appSecret;
       let res = HTTP.get('https://api.weixin.qq.com/sns/oauth2/access_token' +
-        `?appid=${appId}&secret=${context.privateConfigs.wechat.appSecret}&code=${code}&grant_type=authorization_code`);
+        `?appid=${appId}&secret=${appSecret}&code=${code}&grant_type=authorization_code`);
       if (res.statusCode !== 200) {
         throw new Meteor.Error('fail-to-fetch-access-token', res.statusCode);
       }
